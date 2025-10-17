@@ -19,29 +19,54 @@ interface PaginationParams {
 interface ApiResponseData {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown; // Changed from Record<string, unknown> to unknown
   errors?: ValidationError | null;
   timestamp: string;
   statusCode?: number;
 }
 
-interface PaginatedResponse {
-  feedbacks: any[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
+interface FeedbackItem {
+  _id: string;
+  studentId: string;
+  studentName: string;
+  email: string;
+  department: string;
+  semester: string;
+  degreeProgram: string;
+  academicYear: string;
+  courseCode: string;
+  courseName: string;
+  facultyName: string;
+  ratingTeaching: number;
+  ratingContent: number;
+  ratingEvaluation: number;
+  ratingFacilities: number;
+  ratingOverall: number;
+  strengths: string;
+  improvements: string;
+  suggestions?: string;
+  createdAt: Date;
+}
+
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface FeedbackData {
+  feedbacks: FeedbackItem[];
+  pagination: PaginationInfo;
 }
 
 // ==================== RESPONSE HANDLER ====================
 const sendResponse = (
   statusCode: number,
   message: string,
-  data: any = null,
+  data: unknown = null, // Changed from Record<string, unknown> | null to unknown
   errors: ValidationError | null = null
 ): NextResponse<ApiResponseData> => {
   const response: ApiResponseData = {
@@ -51,7 +76,7 @@ const sendResponse = (
     statusCode
   };
 
-  if (data) {
+  if (data !== null && data !== undefined) {
     response.data = data;
   }
 
@@ -104,13 +129,13 @@ const feedbackSchema = z.object({
 });
 
 // ==================== VALIDATION FUNCTIONS ====================
-const validatePagination = (page: any, limit: any): PaginationParams => {
-  let errors: ValidationError = {};
+const validatePagination = (page: string | null, limit: string | null): PaginationParams => {
+  const errors: ValidationError = {};
   let pageNum = 1;
   let limitNum = 10;
 
-  const pageInt = parseInt(page) || 1;
-  const limitInt = parseInt(limit) || 10;
+  const pageInt = parseInt(page ?? '1', 10);
+  const limitInt = parseInt(limit ?? '10', 10);
 
   if (isNaN(pageInt) || pageInt < 1) {
     errors.page = 'Page must be a positive number';
@@ -133,20 +158,21 @@ const validatePagination = (page: any, limit: any): PaginationParams => {
 };
 
 // ==================== POST - CREATE FEEDBACK ====================
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse<ApiResponseData>> {
   try {
     // Connect to database
     await connectDB();
 
     // Parse and validate request body
-    const body = await request.json();
+    const body = await request.json() as Record<string, unknown>;
     const validationResult = feedbackSchema.safeParse(body);
 
     if (!validationResult.success) {
-      const errors = validationResult.error.issues.map(issue => ({
-        field: issue.path.join('.'),
-        message: issue.message
-      }));
+      const errors: ValidationError = {};
+      validationResult.error.issues.forEach(issue => {
+        const field = issue.path.join('.');
+        errors[field] = issue.message;
+      });
 
       return sendResponse(
         400,
@@ -170,7 +196,7 @@ export async function POST(request: NextRequest) {
         409,
         'Feedback already submitted for this course by this student',
         null,
-        { duplicateId: existingFeedback._id }
+        { duplicateId: String(existingFeedback._id) }
       );
     }
 
@@ -182,19 +208,25 @@ export async function POST(request: NextRequest) {
       201,
       'Feedback submitted successfully',
       {
-        id: savedFeedback._id,
+        id: String(savedFeedback._id),
         studentId: savedFeedback.studentId,
         courseCode: savedFeedback.courseCode,
         createdAt: savedFeedback.createdAt
       }
     );
 
-  } catch (error: any) {
-    console.error('❌ POST error:', error);
+  } catch (error: unknown) {
+    const err = error as Error & { 
+      code?: number; 
+      keyPattern?: Record<string, number>; 
+      errors?: Record<string, { message: string }> 
+    };
+    
+    console.error('❌ POST error:', err);
 
     // Handle duplicate key error
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyPattern)[0];
+    if (err.code === 11000 && err.keyPattern) {
+      const field = Object.keys(err.keyPattern)[0];
       return sendResponse(
         409,
         `${field} already exists in the system`,
@@ -204,10 +236,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle validation error
-    if (error.name === 'ValidationError') {
+    if (err.name === 'ValidationError' && err.errors) {
       const validationErrors: ValidationError = {};
-      Object.keys(error.errors).forEach(key => {
-        validationErrors[key] = error.errors[key].message;
+      Object.keys(err.errors).forEach(key => {
+        const errorObj = err.errors?.[key];
+        validationErrors[key] = errorObj?.message ?? 'Validation error';
       });
       return sendResponse(400, 'Validation error', null, validationErrors);
     }
@@ -217,13 +250,13 @@ export async function POST(request: NextRequest) {
       500,
       'Failed to submit feedback. Please try again later.',
       null,
-      { error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' }
+      { error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error' }
     );
   }
 }
 
 // ==================== GET - RETRIEVE FEEDBACKS ====================
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse<ApiResponseData>> {
   try {
     await connectDB();
 
@@ -253,8 +286,8 @@ export async function GET(request: NextRequest) {
     const limitNum = paginationValidation.limit;
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object
-    const filter: any = {};
+    // Build filter object with proper typing
+    const filter: Record<string, unknown> = {};
 
     if (department) {
       filter.department = department;
@@ -276,10 +309,10 @@ export async function GET(request: NextRequest) {
       filter.facultyName = { $regex: facultyName, $options: 'i' };
     }
 
-    // Execute queries in parallel
-    const [feedbacks, total] = await Promise.all([
+    // Execute queries in parallel with proper type casting
+    const [feedbacksResult, total] = await Promise.all([
       StudentFeedback.find(filter)
-        .select('-_v -__v') // Exclude version fields
+        .select('-_v -__v')
         .sort(sortBy)
         .skip(skip)
         .limit(limitNum)
@@ -287,11 +320,35 @@ export async function GET(request: NextRequest) {
       StudentFeedback.countDocuments(filter)
     ]);
 
+    // Transform the result to ensure proper typing
+    const feedbacks: FeedbackItem[] = feedbacksResult.map(feedback => ({
+      _id: String(feedback._id),
+      studentId: feedback.studentId,
+      studentName: feedback.studentName,
+      email: feedback.email,
+      department: feedback.department,
+      semester: feedback.semester,
+      degreeProgram: feedback.degreeProgram,
+      academicYear: feedback.academicYear,
+      courseCode: feedback.courseCode,
+      courseName: feedback.courseName,
+      facultyName: feedback.facultyName,
+      ratingTeaching: feedback.ratingTeaching,
+      ratingContent: feedback.ratingContent,
+      ratingEvaluation: feedback.ratingEvaluation,
+      ratingFacilities: feedback.ratingFacilities,
+      ratingOverall: feedback.ratingOverall,
+      strengths: feedback.strengths,
+      improvements: feedback.improvements,
+      suggestions: feedback.suggestions || '',
+      createdAt: feedback.createdAt
+    }));
+
     const totalPages = Math.ceil(total / limitNum);
     const hasNextPage = pageNum < totalPages;
     const hasPreviousPage = pageNum > 1;
 
-    return sendResponse(200, 'Feedbacks retrieved successfully', {
+    const responseData: FeedbackData = {
       feedbacks,
       pagination: {
         currentPage: pageNum,
@@ -301,21 +358,25 @@ export async function GET(request: NextRequest) {
         hasNextPage,
         hasPreviousPage
       }
-    });
+    };
 
-  } catch (error: any) {
-    console.error('❌ GET error:', error);
+    // Fixed: Pass responseData directly without type casting
+    return sendResponse(200, 'Feedbacks retrieved successfully', responseData);
+
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('❌ GET error:', err);
     return sendResponse(
       500,
       'Failed to retrieve feedbacks. Please try again later.',
       null,
-      { error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' }
+      { error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error' }
     );
   }
 }
 
 // ==================== OPTIONS - CORS ====================
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS(): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 200,
     headers: {

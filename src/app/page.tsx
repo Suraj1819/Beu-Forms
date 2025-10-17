@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Briefcase, Users, Home, Code2, Github, Linkedin, X, Instagram, Facebook, Disc, Mail,Twitch } from 'lucide-react';
+import { Briefcase, Users, Home, Code2, Github, Linkedin, X, Instagram, Mail} from 'lucide-react';
 
 export default function LandingPage() {
   const router = useRouter();
