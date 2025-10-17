@@ -52,13 +52,18 @@ interface FormData {
 interface ApiError {
   success?: boolean;
   message?: string;
-  errors?: { [key: string]: string };
+  errors?: Record<string, string>;
   error?: string;
   details?: string;
 }
 
 interface ValidationErrors {
   [key: string]: string;
+}
+
+interface ApiResponse {
+  message?: string;
+  data?: FormData;
 }
 
 const JobNotificationForm: React.FC = () => {
@@ -110,7 +115,6 @@ const JobNotificationForm: React.FC = () => {
 
   const [formData, setFormData] = useState<FormData>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
@@ -231,12 +235,12 @@ const JobNotificationForm: React.FC = () => {
       errors.jobDescription = '✗ Job description must be at least 30 characters';
     }
 
-    const minHiresNum = parseInt(formData.minHires) || 0;
+    const minHiresNum = parseInt(formData.minHires, 10) || 0;
     if (!formData.minHires || isNaN(minHiresNum) || minHiresNum < 0) {
       errors.minHires = '✗ Valid minimum hires required (non-negative number)';
     }
 
-    const expectedHiresNum = parseInt(formData.expectedHires) || 0;
+    const expectedHiresNum = parseInt(formData.expectedHires, 10) || 0;
     if (!formData.expectedHires || isNaN(expectedHiresNum) || expectedHiresNum < minHiresNum) {
       errors.expectedHires = '✗ Expected hires must be >= minimum hires';
     }
@@ -342,12 +346,11 @@ const JobNotificationForm: React.FC = () => {
           const currentArray = [...(prev[fieldName as keyof FormData] as string[])];
           if (checked) {
             return { ...prev, [fieldName]: [...currentArray, value] };
-          } else {
-            return {
-              ...prev,
-              [fieldName]: currentArray.filter(item => item !== value)
-            };
           }
+          return {
+            ...prev,
+            [fieldName]: currentArray.filter(item => item !== value)
+          };
         });
       }
     } else {
@@ -380,11 +383,10 @@ const JobNotificationForm: React.FC = () => {
     setValidationErrors({});
     setIsSubmitting(true);
     setSubmitError('');
-    setSubmitSuccess(false);
     setShowSuccessMessage(false);
 
     try {
-      const response = await axios.post('/api/users/job-notifications', formData, {
+      const response = await axios.post<ApiResponse>('/api/users/job-notifications', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -403,7 +405,6 @@ const JobNotificationForm: React.FC = () => {
         });
 
         // Set success states
-        setSubmitSuccess(true);
         setShowSuccessMessage(true);
         
         // Reset form
@@ -417,9 +418,11 @@ const JobNotificationForm: React.FC = () => {
         });
 
         // Hide success message after 8 seconds
-        setTimeout(() => {
+        const successTimer = setTimeout(() => {
           setShowSuccessMessage(false);
         }, 8000);
+
+        return () => clearTimeout(successTimer);
       }
     } catch (error) {
       const axiosError = error as AxiosError<ApiError>;
@@ -1223,7 +1226,7 @@ const JobNotificationForm: React.FC = () => {
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {phdDepartments.map((dept) => (
-                                        <label key={dept} className="flex items-center space-x-2 p-4 bg-white/60 rounded-lg border border-amber-200/50 hover:bg-amber-100/50 transition-colors cursor-pointer">
+                    <label key={dept} className="flex items-center space-x-2 p-4 bg-white/60 rounded-lg border border-amber-200/50 hover:bg-amber-100/50 transition-colors cursor-pointer">
                       <input
                         type="checkbox"
                         name="eligiblePhDDepartments"
