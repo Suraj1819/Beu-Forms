@@ -229,7 +229,7 @@ const StudentFeedbackForm: React.FC = () => {
     setValidationErrors({});
 
     try {
-      const response = await axios.post(`${process.env.DOMAIN}/api/users/student-feedback`, formData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_DOMAIN}/api/users/student-feedback`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
