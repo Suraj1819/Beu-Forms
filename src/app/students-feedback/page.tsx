@@ -276,7 +276,7 @@ const StudentFeedbackForm: React.FC = () => {
   const renderFieldError = (fieldName: string) => {
     if (!validationErrors[fieldName]) return null;
     return (
-      <p className="text-red-400 dark:text-red-600 text-xs font-semibold mt-2 bg-red-950/30 dark:bg-red-50 p-2 rounded border-l-2 border-red-500">
+      <p className="text-red-600 text-xs font-semibold mt-2 bg-red-100 p-2 rounded border-l-2 border-red-500">
         {validationErrors[fieldName]}
       </p>
     );
@@ -312,7 +312,7 @@ const StudentFeedbackForm: React.FC = () => {
   const facilitiesOptions = ['Excellent', 'Good', 'Average', 'Poor', 'Not Applicable'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#191c2e] via-[#141520] to-[#23314c] text-white dark:bg-gradient-to-br dark:from-blue-50 dark:via-indigo-50 dark:to-purple-50 dark:text-gray-900">
+    <div className="min-h-screen bg-gray-100 text-gray-900">
       <style jsx>{`
         @keyframes slide-in-from-top {
           from {
@@ -324,7 +324,7 @@ const StudentFeedbackForm: React.FC = () => {
             transform: translateY(0);
           }
         }
-        .slide-in-from-top-5 {
+        .slide-in-from-top {
           animation: slide-in-from-top 0.5s ease-out;
         }
         @keyframes fade-in {
@@ -340,78 +340,73 @@ const StudentFeedbackForm: React.FC = () => {
         }
       `}</style>
 
-      <nav className="bg-[#232b3e]/90 dark:bg-white/90 backdrop-blur-lg border-b border-blue-900/30 dark:border-blue-200 shadow-sm sticky top-0 z-50">
+      <nav className="bg-white shadow border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-16">
             <div className="text-center">
-              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 dark:from-blue-600 dark:to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold text-blue-700">
                 Bihar Engineering University
               </h1>
-              <p className="text-xs sm:text-sm text-blue-300 dark:text-blue-700 mt-1">Student Feedback System</p>
+              <p className="text-sm text-blue-500 mt-1">Student Feedback System</p>
             </div>
           </div>
         </div>
       </nav>
 
       <div className="py-8 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto bg-[#232b3e]/80 dark:bg-white/80 backdrop-blur-xl border border-blue-900/50 dark:border-blue-200 rounded-2xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-950 to-indigo-950 dark:from-blue-600 dark:to-indigo-600 text-white p-8">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-blue-700 text-white p-8">
             <div className="text-center">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-3">
+              <h1 className="text-3xl font-bold mb-3">
                 Student Feedback Form
               </h1>
-              <div className="w-20 h-1 bg-white/50 mx-auto mb-4"></div>
-              <p className="text-blue-200 dark:text-blue-100 text-lg mb-2">
+              <div className="w-20 h-1 bg-blue-300 mx-auto mb-4"></div>
+              <p className="text-blue-100 text-lg mb-2">
                 Government Engineering College, Vaishali
               </p>
-              <div className="mt-4 text-sm text-blue-200 dark:text-blue-100/90 max-w-2xl mx-auto">
+              <div className="mt-4 text-sm text-blue-50 max-w-2xl mx-auto">
                 <p>📝 Your feedback helps us improve academic quality and campus facilities.</p>
                 <p className="mt-1">🔒 All responses are anonymous and confidential.</p>
               </div>
             </div>
           </div>
 
-          {/* ❌ Error Message */}
+          {/* Error Message */}
           {submitError && (
-            <div className="bg-red-950/30 dark:bg-red-50 border-l-4 border-red-500 p-6 mx-6 mt-6 rounded-r-lg shadow-md animate-in slide-in-from-top-5">
+            <div className="bg-red-100 border-l-4 border-red-500 p-6 mx-6 mt-6 rounded shadow animate-in slide-in-from-top">
               <div className="flex items-start gap-4">
-                <div className="text-red-400 dark:text-red-500 mt-1">
+                <div className="text-red-600 mt-1">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-red-300 dark:text-red-800 font-bold text-lg">Error</p>
-                  <p className="text-red-300 dark:text-red-700 text-sm mt-1">{submitError}</p>
+                  <p className="text-red-700 font-bold text-lg">Error</p>
+                  <p className="text-red-600 text-sm mt-1">{submitError}</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* ✅ Success Message */}
+          {/* Success Message */}
           {showSuccessMessage && (
-            <div className="bg-gradient-to-r from-green-950/50 to-emerald-950/50 dark:from-green-50 dark:to-emerald-50 border-l-4 border-green-500 p-6 mx-6 mt-6 rounded-r-lg shadow-lg animate-in slide-in-from-top-5">
+            <div className="bg-green-100 border-l-4 border-green-500 p-6 mx-6 mt-6 rounded shadow animate-in slide-in-from-top">
               <div className="flex items-start gap-4">
-                <div className="text-green-400 dark:text-green-500 mt-1 animate-bounce">
+                <div className="text-green-600 mt-1">
                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-green-200 dark:text-green-800 font-bold text-xl mb-2">
+                  <p className="text-green-700 font-bold text-xl mb-2">
                     ✅ Feedback Submitted Successfully!
                   </p>
-                  <p className="text-green-100 dark:text-green-700 text-base leading-relaxed">
+                  <p className="text-green-600 text-base leading-relaxed">
                     Thank you for your valuable feedback for <strong>Government Engineering College, Vaishali</strong>! 
-                    Your input will help us improve academic quality and campus facilities at our institution.
+                    Your input will help us improve the academic and campus facilities.
                   </p>
-                  <p className="text-green-200 dark:text-green-600 text-sm mt-2">
-                    Your feedback is anonymous and will be used by our academic council and 
-                    infrastructure committee to enhance the learning experience at Government 
-                    Engineering College, Vaishali.
-                  </p>
-                  <div className="mt-4 p-3 bg-green-900/30 dark:bg-green-100 rounded-lg border border-green-800 dark:border-green-200">
-                    <p className="text-sm text-green-200 dark:text-green-800 font-medium">
+                  <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-300">
+                    <p className="text-sm text-green-700 font-medium">
                       🔔 You will be redirected to the thank-you page shortly.
                     </p>
                   </div>
@@ -423,21 +418,21 @@ const StudentFeedbackForm: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-8 space-y-8" aria-disabled={showSuccessMessage}>
             {/* STUDENT INFORMATION SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 👤 Student Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className={validationErrors.studentId ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Registration Number <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Registration Number <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     name="studentId"
                     value={formData.studentId}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="BEU20240001"
                     disabled={showSuccessMessage || isSubmitting}
                   />
@@ -445,15 +440,15 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.studentName ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Full Name <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Full Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     name="studentName"
                     value={formData.studentName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="Enter your full name"
                     disabled={showSuccessMessage || isSubmitting}
                   />
@@ -461,15 +456,15 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.email ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Email Address <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Email Address <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="student@beu.ac.in"
                     disabled={showSuccessMessage || isSubmitting}
                   />
@@ -477,14 +472,14 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.department ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Department <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Department <span className="text-red-600">*</span>
                   </label>
                   <select
                     name="department"
                     value={formData.department}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
                     disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Department --</option>
@@ -496,14 +491,14 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.semester ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Semester <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Semester <span className="text-red-600">*</span>
                   </label>
                   <select
                     name="semester"
                     value={formData.semester}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
                     disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Semester --</option>
@@ -515,14 +510,14 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.degreeProgram ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Degree Program <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Degree Program <span className="text-red-600">*</span>
                   </label>
                   <select
                     name="degreeProgram"
                     value={formData.degreeProgram}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
                     disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Program --</option>
@@ -534,14 +529,14 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.academicYear ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Academic Year <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Academic Year <span className="text-red-600">*</span>
                   </label>
                   <select
                     name="academicYear"
                     value={formData.academicYear}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
                     disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Year --</option>
@@ -555,21 +550,21 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* COURSE & FACULTY SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 📚 Course & Faculty Details
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className={validationErrors.courseCode ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Course Code <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Course Code <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     name="courseCode"
                     value={formData.courseCode}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="e.g., CS101"
                     disabled={showSuccessMessage || isSubmitting}
                   />
@@ -577,31 +572,31 @@ const StudentFeedbackForm: React.FC = () => {
                 </div>
 
                 <div className={validationErrors.courseName ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Subject Name <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Subject Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     name="courseName"
                     value={formData.courseName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="e.g., Data Structures"
                     disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('courseName')}
                 </div>
 
-                <div className={`md:col-span-2 ${validationErrors.facultyName ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}`}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Faculty Name <span className="text-red-400 dark:text-red-500">*</span>
+                <div className={validationErrors.facultyName ? 'ring-2 ring-red-500 p-4 rounded-lg md:col-span-2' : 'md:col-span-2'}>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Faculty Name <span className="text-red-600">*</span>
                   </label>
                   <input
                     type="text"
                     name="facultyName"
                     value={formData.facultyName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all"
                     placeholder="e.g., Faculty Name"
                     disabled={showSuccessMessage || isSubmitting}
                   />
@@ -611,11 +606,10 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* RATING SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 ⭐ Ratings & Feedback
               </h2>
-              
               <div className="space-y-6">
                 {(['ratingTeaching', 'ratingContent', 'ratingEvaluation', 'ratingFacilities', 'ratingOverall'] as const).map((field) => {
                   const labels = {
@@ -627,12 +621,12 @@ const StudentFeedbackForm: React.FC = () => {
                   };
                   return (
                     <div key={field} className={validationErrors[field] ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                      <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-3">
-                        {labels[field]} <span className="text-red-400 dark:text-red-500">*</span>
+                      <label className="block text-sm font-semibold text-blue-700 mb-3">
+                        {labels[field]} <span className="text-red-600">*</span>
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                         {ratingOptions.map((option) => (
-                          <label key={option.value} className="flex flex-col items-center p-3 bg-[#1e2537]/60 dark:bg-white/60 rounded-lg border border-blue-800/50 dark:border-blue-200/50 hover:bg-[#2a3447] dark:hover:bg-blue-100/50 transition-colors cursor-pointer">
+                          <label key={option.value} className="flex flex-col items-center p-3 bg-gray-100 rounded-lg border border-gray-300 hover:bg-gray-200 transition-colors cursor-pointer">
                             <input
                               type="radio"
                               name={field}
@@ -642,7 +636,7 @@ const StudentFeedbackForm: React.FC = () => {
                               className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                               disabled={showSuccessMessage || isSubmitting}
                             />
-                            <span className="text-sm text-blue-200 dark:text-blue-800 mt-2 text-center">{option.label}</span>
+                            <span className="text-sm text-blue-700 mt-2 text-center">{option.label}</span>
                           </label>
                         ))}
                       </div>
@@ -654,14 +648,14 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* COURSE FEEDBACK SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 💬 Detailed Feedback
               </h2>
               <div className="space-y-6">
                 <div className={validationErrors.strengths ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Strengths of this Course <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Strengths of this Course <span className="text-red-600">*</span>
                   </label>
                   <textarea
                     name="strengths"
@@ -669,19 +663,19 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     maxLength={1000}
                     rows={3}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all resize-none"
                     placeholder="What did you like about this course? (teaching, content, faculty, etc.)"
                     disabled={showSuccessMessage || isSubmitting}
                   />
-                  <p className="text-xs text-blue-300 dark:text-blue-600 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {formData.strengths.length}/1000 characters
                   </p>
                   {renderFieldError('strengths')}
                 </div>
 
                 <div className={validationErrors.improvements ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
-                    Areas for Improvement <span className="text-red-400 dark:text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
+                    Areas for Improvement <span className="text-red-600">*</span>
                   </label>
                   <textarea
                     name="improvements"
@@ -689,18 +683,18 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     maxLength={1000}
                     rows={3}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all resize-none"
                     placeholder="What could be improved? (pace, clarity, lab work, assignments, etc.)"
                     disabled={showSuccessMessage || isSubmitting}
                   />
-                  <p className="text-xs text-blue-300 dark:text-blue-600 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {formData.improvements.length}/1000 characters
                   </p>
                   {renderFieldError('improvements')}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
+                  <label className="block text-sm font-semibold text-blue-700 mb-2">
                     Suggestions for Enhancement
                   </label>
                   <textarea
@@ -709,11 +703,11 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     maxLength={1000}
                     rows={3}
-                    className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all resize-none"
                     placeholder="Any specific suggestions you would like to recommend?"
                     disabled={showSuccessMessage || isSubmitting}
                   />
-                  <p className="text-xs text-blue-300 dark:text-blue-600 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {formData.suggestions.length}/1000 characters
                   </p>
                 </div>
@@ -721,8 +715,8 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* CAMPUS FACILITIES SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 🏫 Campus Facilities & Support
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -738,12 +732,12 @@ const StudentFeedbackForm: React.FC = () => {
                   { name: 'placementSupport', label: 'Placement Support & Assistance' }
                 ] as const).map(({ name, label }) => (
                   <div key={name}>
-                    <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-3">
+                    <label className="block text-sm font-semibold text-blue-700 mb-3">
                       {label}
                     </label>
                     <div className="space-y-2">
                       {facilitiesOptions.map((option) => (
-                        <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-[#2a3447] dark:hover:bg-blue-100/50 transition-colors cursor-pointer">
+                        <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-gray-200 transition-colors cursor-pointer border border-gray-300 bg-gray-100">
                           <input
                             type="radio"
                             name={name}
@@ -753,7 +747,7 @@ const StudentFeedbackForm: React.FC = () => {
                             className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                             disabled={showSuccessMessage || isSubmitting}
                           />
-                          <span className="text-sm text-blue-200 dark:text-blue-800">{option}</span>
+                          <span className="text-sm text-blue-700">{option}</span>
                         </label>
                       ))}
                     </div>
@@ -763,16 +757,16 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* IMPROVEMENT AREAS SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 🎯 Areas Needing Improvement
               </h2>
-              <p className="text-sm text-blue-300 dark:text-blue-700 mb-4">
+              <p className="text-sm text-gray-600 mb-4">
                 Select all areas that you think need improvement:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {improvementAreas.map((area) => (
-                  <label key={area} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2a3447] dark:hover:bg-blue-100/50 transition-colors cursor-pointer border border-blue-800/50 dark:border-blue-200/50 bg-[#1e2537]/60 dark:bg-white/60">
+                  <label key={area} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer border border-gray-300 bg-gray-100">
                     <input
                       type="checkbox"
                       name="recommendImprovements[]"
@@ -782,19 +776,19 @@ const StudentFeedbackForm: React.FC = () => {
                       className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                       disabled={showSuccessMessage || isSubmitting}
                     />
-                    <span className="text-sm font-medium text-blue-200 dark:text-blue-800">{area}</span>
+                    <span className="text-sm font-medium text-blue-700">{area}</span>
                   </label>
                 ))}
               </div>
             </section>
 
             {/* GENERAL COMMENTS SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 📋 Additional Comments
               </h2>
               <div>
-                <label className="block text-sm font-semibold text-blue-200 dark:text-blue-800 mb-2">
+                <label className="block text-sm font-semibold text-blue-700 mb-2">
                   Any Other Comments or Concerns
                 </label>
                 <textarea
@@ -803,23 +797,23 @@ const StudentFeedbackForm: React.FC = () => {
                   onChange={handleChange}
                   maxLength={1500}
                   rows={4}
-                  className="w-full px-4 py-3 border border-blue-800 dark:border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#1e2537] dark:bg-white text-white dark:text-gray-900 placeholder-blue-400 dark:placeholder-gray-400 transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 transition-all resize-none"
                   placeholder="Please share any additional feedback, concerns, or observations..."
                   disabled={showSuccessMessage || isSubmitting}
                 />
-                <p className="text-xs text-blue-300 dark:text-blue-600 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {formData.additionalComments.length}/1500 characters
                 </p>
               </div>
             </section>
 
             {/* PARTICIPATION SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <h2 className="text-2xl font-bold text-blue-200 dark:text-blue-800 mb-6 pb-3 border-b border-blue-800 dark:border-blue-300">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h2 className="text-2xl font-bold text-blue-700 mb-6 pb-3 border-b border-blue-200">
                 ✅ Participation & Follow-up
               </h2>
               <div className="space-y-4">
-                <label className="flex items-start space-x-4 p-4 rounded-lg bg-[#1e2537]/60 dark:bg-white/60 border border-blue-800/50 dark:border-blue-200/50 hover:bg-[#2a3447] dark:hover:bg-blue-100/50 transition-colors cursor-pointer">
+                <label className="flex items-start space-x-4 p-4 rounded-lg bg-gray-100 border border-gray-300 hover:bg-gray-200 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     name="willingToParticipate"
@@ -829,16 +823,16 @@ const StudentFeedbackForm: React.FC = () => {
                     disabled={showSuccessMessage || isSubmitting}
                   />
                   <div>
-                    <span className="font-semibold text-blue-200 dark:text-blue-800">
+                    <span className="font-semibold text-blue-700">
                       {"I'm willing to participate in focus group discussions"}
                     </span>
-                    <p className="text-sm text-blue-300 dark:text-blue-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       Help us understand issues in greater depth through group discussions
                     </p>
                   </div>
                 </label>
 
-                <label className="flex items-start space-x-4 p-4 rounded-lg bg-[#1e2537]/60 dark:bg-white/60 border border-blue-800/50 dark:border-blue-200/50 hover:bg-[#2a3447] dark:hover:bg-blue-100/50 transition-colors cursor-pointer">
+                <label className="flex items-start space-x-4 p-4 rounded-lg bg-gray-100 border border-gray-300 hover:bg-gray-200 transition-colors cursor-pointer">
                   <input
                     type="checkbox"
                     name="contactForFollowup"
@@ -848,10 +842,10 @@ const StudentFeedbackForm: React.FC = () => {
                     disabled={showSuccessMessage || isSubmitting}
                   />
                   <div>
-                    <span className="font-semibold text-blue-200 dark:text-blue-800">
+                    <span className="font-semibold text-blue-700">
                       I can be contacted for follow-up questions
                     </span>
-                    <p className="text-sm text-blue-300 dark:text-blue-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       We may reach out via email for clarification on your feedback
                     </p>
                   </div>
@@ -860,9 +854,9 @@ const StudentFeedbackForm: React.FC = () => {
             </section>
 
             {/* CONSENT SECTION */}
-            <section className="bg-gradient-to-r from-[#2a3447]/70 to-[#1e2537]/70 dark:from-blue-50/70 dark:to-indigo-50/70 p-6 rounded-xl border border-blue-900/50 dark:border-blue-300/50 shadow-sm">
-              <div className="bg-[#1e2537] dark:bg-blue-50 p-4 rounded-lg border border-blue-900 dark:border-blue-200">
-                <p className="text-sm text-blue-200 dark:text-blue-800 leading-relaxed">
+            <section className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <div className="bg-gray-200 p-4 rounded-lg border border-gray-300">
+                <p className="text-sm text-gray-700 leading-relaxed">
                   <span className="font-semibold">🔒 Data Privacy Notice:</span> Your feedback is confidential and will be used only for improving academic quality and campus facilities at BEU. Your identity will be protected and responses will be analyzed collectively. By submitting this form, you consent to us using your feedback for institutional improvement purposes.
                 </p>
               </div>
@@ -873,10 +867,10 @@ const StudentFeedbackForm: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting || showSuccessMessage}
-                className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-lg transition-all duration-300 ${
+                className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-lg transition-all duration-300 hover:scale-105 hover:cursor-pointer ${
                   isSubmitting || showSuccessMessage
-                    ? 'bg-gray-600 dark:bg-gray-400 cursor-not-allowed opacity-75'
-                    : 'bg-gradient-to-r from-blue-700 to-indigo-700 dark:from-blue-600 dark:to-indigo-600 hover:from-blue-800 hover:to-indigo-800 dark:hover:from-blue-700 dark:hover:to-indigo-700 hover:scale-[1.02] hover:shadow-xl focus:ring-4 focus:ring-blue-300 hover:cursor-pointer'
+                    ? 'bg-gray-400 cursor-not-allowed opacity-75'
+                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-xl focus:ring-4 focus:ring-blue-300'
                 }`}
               >
                 {isSubmitting ? (
@@ -890,61 +884,61 @@ const StudentFeedbackForm: React.FC = () => {
                   '📤 Submit Feedback'
                 )}
               </button>
-              <p className="mt-4 text-xs text-blue-300 dark:text-blue-600 text-center">
+              <p className="mt-4 text-xs text-gray-600 text-center">
                 🔒 Your feedback is confidential and helps us create a better learning environment
               </p>
             </div>
           </form>
 
           {/* Footer */}
-          <div className="bg-gradient-to-r from-[#232b3e]/80 to-[#1e2537]/80 dark:from-blue-50/80 dark:to-indigo-50/80 p-4 sm:p-6 md:p-8 border-t border-blue-900 dark:border-blue-200">
-            <div className="text-center space-y-4 sm:space-y-6">
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
-                <a href="https://github.com/Suraj1819" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
+          <div className="bg-gray-100 p-6 border-t border-gray-200">
+            <div className="text-center space-y-4">
+              <div className="flex flex-wrap justify-center gap-4">
+                <a href="https://github.com/Suraj1819" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 transition-all duration-300 hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.239 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 </a>
-                <a href="https://www.linkedin.com/in/suraj-kumar-72847b30a/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
+                <a href="https://www.linkedin.com/in/suraj-kumar-72847b30a/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 transition-all duration-300 hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
                   </svg>
                 </a>
-                <a href="https://x.com/SuraJzRt" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
+                <a href="https://x.com/SuraJzRt" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 transition-all duration-300 hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.657l-5.07-6.573-5.848 6.573H2.18l7.732-8.835L1.254 2.25h6.554l4.596 6.084 5.308-6.084zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                 </a>
-                <a href="https://leetcode.com/u/Suraj_1819/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
+                <a href="https://leetcode.com/u/Suraj_1819/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M16.102 17.93h-2.697v5.57h2.697v-5.57zM15.795 13.91h-2.66v4.02h2.66v-4.02zm5.539 9.5h-2.694v-5.932h2.694v5.932zM4.487 12.557h2.694V3.05H4.487v9.507zm11.311 1.155h2.697v-4.882h-2.697v4.882zm-13.993-1.155h2.697v-4.882H1.805v4.882z"/>
                   </svg>
                 </a>
-                <a href="https://www.instagram.com/risu2948/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
-                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.059-1.265-.073-1.689-.073-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.204-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
+                <a href="https://www.instagram.com/risu2948/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 transition-all duration-300 hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.227-1.664 4.771-4.919 4.919-1.266.057-1.645.069-4.85.069-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.059-1.265-.073-1.689-.073-4.849 0-3.259.013-3.668.07-4.948.2-4.358 2.618-6.78 6.98-6.98 1.281-.058 1.689-.072 4.948-.072 3.259 0 3.668.014 4.948.072 4.354.2 6.782 2.618 6.979 6.98.059 1.28.073 1.689.073 4.948 0 3.259-.014 3.668-.072 4.948-.196 4.354-2.617 6.78-6.979 6.98-1.281.059-1.69.073-4.949.073-3.259 0-3.667-.014-4.947-.072-4.358-.2-6.78-2.618-6.98-6.98-.059-1.281-.073-1.69-.073-4.949 0-3.204.013-3.667.07-4.947.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.204-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
                   </svg>
                 </a>
-                <a href="https://discord.com/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-[#2a3447] dark:bg-blue-100 border border-blue-800 dark:border-blue-300 rounded-lg hover:bg-[#364154] dark:hover:bg-blue-200 hover:border-blue-700 dark:hover:border-blue-400 transition duration-300 flex items-center justify-center group">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-300 dark:text-blue-600 group-hover:scale-110 group-hover:text-blue-400 dark:group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.444.864-.607 1.25a18.27 18.27 0 0 0-5.487 0c-.163-.386-.395-.875-.607-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.042-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.294.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.098.246.198.373.295a.077.077 0 0 1-.007.127 12.299 12.299 0 0 1-1.871.892.076.076 0 0 0-.041.107c.36.699.772 1.365 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-4.718-.838-8.812-3.54-12.46a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-.965-2.157-2.156 0-1.193.934-2.157 2.157-2.157 1.226 0 2.157.964 2.157 2.157 0 1.19-.93 2.155-2.157 2.155zm7.975 0c-1.183 0-2.157-.965-2.157-2.156 0-1.193.934-2.157 2.157-2.157 1.226 0 2.157.964 2.157 2.157 0 1.19-.931 2.155-2.157 2.155z"/>
+                <a href="https://discord.com/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center">
+                  <svg className="h-5 w-5 text-blue-600 transition-all duration-300 hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.211.375-.444.864-.607 1.25a18.27 18.27 0 0 0-5.487 0c-.163-.386-.395-.875-.607-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.042-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.294.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.098.246.198.373.295a.077.077 0 0 1-.007.127 12.299 12.299 0 0 1-1.871.892.076.076 0 0 0-.041.107c.36.699.772 1.365 1.225 1.994a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-4.718-.838-8.812-3.54-12.46a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-.965-2.157-2.156 0-1.193.934-2.157 2.157-2.157 1.226 0 2.157.964 2.157 2.157 0 1.19-.93 2.155-2.157 2.155z"/>
                   </svg>
                 </a>
               </div>
 
-              <div className="pt-3 sm:pt-4 border-t border-blue-800 dark:border-blue-200">
-                <p className="text-xs sm:text-sm text-blue-300 dark:text-blue-800">
-                  Made with <span className="inline-block text-red-400 dark:text-red-500 text-base sm:text-lg animate-pulse">❤️</span> by{' '}
+              <div className="pt-4 border-t border-gray-300">
+                <p className="text-xs text-gray-600">
+                  Made with <span className="inline-block text-red-600 text-lg animate-bounce">❤️</span> by{' '}
                   <a 
                     href="https://surajz.dev" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 dark:from-blue-600 dark:via-indigo-600 dark:to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 dark:hover:from-blue-700 dark:hover:via-indigo-700 dark:hover:to-purple-700 transition-all duration-300 cursor-pointer"
+                    className="font-bold text-blue-700 hover:text-blue-800 transition duration-300"
                   >
                     SuraJz
                   </a>
                 </p>
-                <p className="text-xs text-blue-400 dark:text-blue-500 mt-2">
+                <p className="text-xs text-gray-500 mt-2">
                   © 2025 Government Engineering College, Vaishali | All rights reserved
                 </p>
               </div>
