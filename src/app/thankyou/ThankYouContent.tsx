@@ -168,13 +168,13 @@ export default function ThankYouContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Link href="/students-feedback">
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base">
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base hover:cursor-pointer">
                     ✏️ Another Feedback
                   </button>
                 </Link>
                 
                 <Link href="/">
-                  <button className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base">
+                  <button className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 sm:py-4 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm sm:text-base hover:cursor-pointer">
                     🏠 Back Home
                   </button>
                 </Link>
