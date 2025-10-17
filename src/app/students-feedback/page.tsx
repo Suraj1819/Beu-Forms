@@ -267,6 +267,7 @@ const StudentFeedbackForm: React.FC = () => {
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
     } finally {
       setIsSubmitting(false);
     }
