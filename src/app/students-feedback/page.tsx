@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 
@@ -89,11 +89,11 @@ const StudentFeedbackForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false); // ✅ Added
 
   const validateFormFrontend = (): { isValid: boolean; errors: ValidationErrors } => {
     const errors: ValidationErrors = {};
 
-    // Student Information Validation
     if (!formData.studentId?.trim()) {
       errors.studentId = '✗ Student ID is required';
     }
@@ -126,7 +126,6 @@ const StudentFeedbackForm: React.FC = () => {
       errors.academicYear = '✗ Academic year is required';
     }
 
-    // Course & Faculty Validation
     if (!formData.courseCode?.trim()) {
       errors.courseCode = '✗ Course code is required';
     }
@@ -139,7 +138,6 @@ const StudentFeedbackForm: React.FC = () => {
       errors.facultyName = '✗ Faculty name is required';
     }
 
-    // Rating Validation
     const ratingFields = [
       'ratingTeaching', 'ratingContent', 'ratingEvaluation', 
       'ratingFacilities', 'ratingOverall'
@@ -151,7 +149,6 @@ const StudentFeedbackForm: React.FC = () => {
       }
     });
 
-    // Feedback Validation
     if (!formData.strengths?.trim()) {
       errors.strengths = '✗ Please mention strengths';
     } else if (formData.strengths.length < 20) {
@@ -194,7 +191,6 @@ const StudentFeedbackForm: React.FC = () => {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-    // Clear error for this field when user starts typing
     if (validationErrors[name]) {
       setValidationErrors(prev => {
         const newErrors = { ...prev };
@@ -206,10 +202,20 @@ const StudentFeedbackForm: React.FC = () => {
 
   const router = useRouter();
 
+  // Auto-redirect after success message is shown
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showSuccessMessage) {
+      timer = setTimeout(() => {
+        router.push('/thankyou');
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [showSuccessMessage, router]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Frontend validation
     const validation = validateFormFrontend();
     if (!validation.isValid) {
       setValidationErrors(validation.errors);
@@ -231,12 +237,11 @@ const StudentFeedbackForm: React.FC = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        // Redirect to thank you page
-        router.push('/thankyou');
+        setShowSuccessMessage(true); // ✅ Show success message
+        return; // Stop further execution
       }
 
     } catch (error) {
-      // Error handling remains the same
       const axiosError = error as AxiosError<ApiError>;
       
       console.error('❌ Submission Error:', {
@@ -248,7 +253,7 @@ const StudentFeedbackForm: React.FC = () => {
       if (axiosError.response?.status === 400 && axiosError.response?.data?.errors) {
         const backendErrors: ValidationErrors = {};
         Object.entries(axiosError.response.data.errors).forEach(([key, value]) => {
-          backendErrors[key] = value[0]; // Take the first error message
+          backendErrors[key] = value[0];
         });
         setValidationErrors(backendErrors);
         setSubmitError('❌ Please fix the errors below and try again');
@@ -267,7 +272,6 @@ const StudentFeedbackForm: React.FC = () => {
     }
   };
 
-  // Render error field component
   const renderFieldError = (fieldName: string) => {
     if (!validationErrors[fieldName]) return null;
     return (
@@ -277,7 +281,6 @@ const StudentFeedbackForm: React.FC = () => {
     );
   };
 
-  // Options
   const departments = [
     'Civil Engineering', 'Mechanical Engineering', 'Electrical Engineering',
     'Electronics & Communication Engineering', 'Computer Science & Engineering',
@@ -309,7 +312,6 @@ const StudentFeedbackForm: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* CSS Animations */}
       <style jsx>{`
         @keyframes slide-in-from-top {
           from {
@@ -337,7 +339,6 @@ const StudentFeedbackForm: React.FC = () => {
         }
       `}</style>
 
-      {/* Navigation Bar */}
       <nav className="bg-white/90 backdrop-blur-lg border-b border-blue-200 shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-16">
@@ -353,7 +354,6 @@ const StudentFeedbackForm: React.FC = () => {
 
       <div className="py-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-xl border border-blue-200 rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8">
             <div className="text-center">
               <h1 className="text-3xl sm:text-4xl font-bold mb-3">
@@ -361,7 +361,7 @@ const StudentFeedbackForm: React.FC = () => {
               </h1>
               <div className="w-20 h-1 bg-white/50 mx-auto mb-4"></div>
               <p className="text-blue-100 text-lg mb-2">
-                Government Engineering College, vaishali
+                Government Engineering College, Vaishali
               </p>
               <div className="mt-4 text-sm text-blue-100/90 max-w-2xl mx-auto">
                 <p>📝 Your feedback helps us improve academic quality and campus facilities.</p>
@@ -370,7 +370,7 @@ const StudentFeedbackForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Error Message */}
+          {/* ❌ Error Message */}
           {submitError && (
             <div className="bg-red-50 border-l-4 border-red-500 p-6 mx-6 mt-6 rounded-r-lg shadow-md animate-in slide-in-from-top-5">
               <div className="flex items-start gap-4">
@@ -387,7 +387,35 @@ const StudentFeedbackForm: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+          {/* ✅ Success Message */}
+          {showSuccessMessage && (
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 mx-6 mt-6 rounded-r-lg shadow-lg animate-in slide-in-from-top-5">
+              <div className="flex items-start gap-4">
+                <div className="text-green-500 mt-1 animate-bounce">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-green-800 font-bold text-xl mb-2">
+                    ✅ Feedback Submitted Successfully!
+                  </p>
+                  <p className="text-green-700 text-base leading-relaxed">
+                    Thank you for your valuable feedback for <strong>Government Engineering College, Vaishali</strong>! 
+                    Your input will help us improve academic quality and campus facilities.
+                  </p>
+                  <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
+                    <p className="text-sm text-green-800 font-medium">
+                      🔔 You will be redirected to the thank-you page shortly.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Form is disabled when success is shown */}
+          <form onSubmit={handleSubmit} className="p-8 space-y-8" aria-disabled={showSuccessMessage}>
             {/* STUDENT INFORMATION SECTION */}
             <section className="bg-gradient-to-r from-blue-50/70 to-indigo-50/70 p-6 rounded-xl border border-blue-300/50 shadow-sm">
               <h2 className="text-2xl font-bold text-blue-800 mb-6 pb-3 border-b border-blue-300">
@@ -405,6 +433,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="BEU20240001"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('studentId')}
                 </div>
@@ -420,6 +449,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="Enter your full name"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('studentName')}
                 </div>
@@ -435,6 +465,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="student@beu.ac.in"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('email')}
                 </div>
@@ -448,6 +479,7 @@ const StudentFeedbackForm: React.FC = () => {
                     value={formData.department}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
+                    disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Department --</option>
                     {departments.map((dept) => (
@@ -466,6 +498,7 @@ const StudentFeedbackForm: React.FC = () => {
                     value={formData.semester}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
+                    disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Semester --</option>
                     {semesters.map((sem) => (
@@ -484,6 +517,7 @@ const StudentFeedbackForm: React.FC = () => {
                     value={formData.degreeProgram}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
+                    disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Program --</option>
                     {degreePrograms.map((program) => (
@@ -502,6 +536,7 @@ const StudentFeedbackForm: React.FC = () => {
                     value={formData.academicYear}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 transition-all"
+                    disabled={showSuccessMessage || isSubmitting}
                   >
                     <option value="">-- Select Year --</option>
                     {academicYears.map((year) => (
@@ -530,6 +565,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="e.g., CS101"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('courseCode')}
                 </div>
@@ -545,6 +581,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="e.g., Data Structures"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('courseName')}
                 </div>
@@ -560,6 +597,7 @@ const StudentFeedbackForm: React.FC = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all"
                     placeholder="e.g., Faculty Name"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   {renderFieldError('facultyName')}
                 </div>
@@ -573,120 +611,39 @@ const StudentFeedbackForm: React.FC = () => {
               </h2>
               
               <div className="space-y-6">
-                {/* Teaching Quality */}
-                <div className={validationErrors.ratingTeaching ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Teaching Quality & Methodology <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {ratingOptions.map((option) => (
-                      <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="ratingTeaching"
-                          value={option.value}
-                          checked={formData.ratingTeaching === option.value}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
+                {(['ratingTeaching', 'ratingContent', 'ratingEvaluation', 'ratingFacilities', 'ratingOverall'] as const).map((field) => {
+                  const labels = {
+                    ratingTeaching: 'Teaching Quality & Methodology',
+                    ratingContent: 'Course Content & Relevance',
+                    ratingEvaluation: 'Evaluation System & Assessment',
+                    ratingFacilities: 'Course Facilities (Lab, Resources)',
+                    ratingOverall: 'Overall Course Experience'
+                  };
+                  return (
+                    <div key={field} className={validationErrors[field] ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
+                      <label className="block text-sm font-semibold text-blue-800 mb-3">
+                        {labels[field]} <span className="text-red-500">*</span>
                       </label>
-                    ))}
-                  </div>
-                  {renderFieldError('ratingTeaching')}
-                </div>
-
-                {/* Course Content */}
-                <div className={validationErrors.ratingContent ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Course Content & Relevance <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {ratingOptions.map((option) => (
-                      <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="ratingContent"
-                          value={option.value}
-                          checked={formData.ratingContent === option.value}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {renderFieldError('ratingContent')}
-                </div>
-
-                {/* Evaluation System */}
-                <div className={validationErrors.ratingEvaluation ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Evaluation System & Assessment <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {ratingOptions.map((option) => (
-                      <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="ratingEvaluation"
-                          value={option.value}
-                          checked={formData.ratingEvaluation === option.value}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {renderFieldError('ratingEvaluation')}
-                </div>
-
-                {/* Course Facilities */}
-                <div className={validationErrors.ratingFacilities ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Course Facilities (Lab, Resources) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {ratingOptions.map((option) => (
-                      <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="ratingFacilities"
-                          value={option.value}
-                          checked={formData.ratingFacilities === option.value}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {renderFieldError('ratingFacilities')}
-                </div>
-
-                {/* Overall Rating */}
-                <div className={validationErrors.ratingOverall ? 'ring-2 ring-red-500 p-4 rounded-lg' : ''}>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Overall Course Experience <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    {ratingOptions.map((option) => (
-                      <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="ratingOverall"
-                          value={option.value}
-                          checked={formData.ratingOverall === option.value}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {renderFieldError('ratingOverall')}
-                </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                        {ratingOptions.map((option) => (
+                          <label key={option.value} className="flex flex-col items-center p-3 bg-white/60 rounded-lg border border-blue-200/50 hover:bg-blue-100/50 transition-colors cursor-pointer">
+                            <input
+                              type="radio"
+                              name={field}
+                              value={option.value}
+                              checked={formData[field] === option.value}
+                              onChange={handleChange}
+                              className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                              disabled={showSuccessMessage || isSubmitting}
+                            />
+                            <span className="text-sm text-blue-800 mt-2 text-center">{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {renderFieldError(field)}
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
@@ -708,6 +665,7 @@ const StudentFeedbackForm: React.FC = () => {
                     rows={3}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all resize-none"
                     placeholder="What did you like about this course? (teaching, content, faculty, etc.)"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   <p className="text-xs text-blue-600 mt-1">
                     {formData.strengths.length}/1000 characters
@@ -727,6 +685,7 @@ const StudentFeedbackForm: React.FC = () => {
                     rows={3}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all resize-none"
                     placeholder="What could be improved? (pace, clarity, lab work, assignments, etc.)"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   <p className="text-xs text-blue-600 mt-1">
                     {formData.improvements.length}/1000 characters
@@ -746,6 +705,7 @@ const StudentFeedbackForm: React.FC = () => {
                     rows={3}
                     className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all resize-none"
                     placeholder="Any specific suggestions you would like to recommend?"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   <p className="text-xs text-blue-600 mt-1">
                     {formData.suggestions.length}/1000 characters
@@ -760,203 +720,39 @@ const StudentFeedbackForm: React.FC = () => {
                 🏫 Campus Facilities & Support
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Library Facilities */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Library Facilities
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="libraryFacilities"
-                          value={option}
-                          checked={formData.libraryFacilities === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
+                {([
+                  { name: 'libraryFacilities', label: 'Library Facilities' },
+                  { name: 'labFacilities', label: 'Lab Facilities' },
+                  { name: 'hostelFacilities', label: 'Hostel Facilities' },
+                  { name: 'sportsFacilities', label: 'Sports Facilities' },
+                  { name: 'careerGuidance', label: 'Career Guidance & Counseling' },
+                  { name: 'extracurricular', label: 'Extracurricular Activities' },
+                  { name: 'campusEnvironment', label: 'Campus Environment' },
+                  { name: 'adminSupport', label: 'Administrative Support' },
+                  { name: 'placementSupport', label: 'Placement Support & Assistance' }
+                ] as const).map(({ name, label }) => (
+                  <div key={name}>
+                    <label className="block text-sm font-semibold text-blue-800 mb-3">
+                      {label}
+                    </label>
+                    <div className="space-y-2">
+                      {facilitiesOptions.map((option) => (
+                        <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
+                          <input
+                            type="radio"
+                            name={name}
+                            value={option}
+                            checked={formData[name] === option}
+                            onChange={handleChange}
+                            className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                            disabled={showSuccessMessage || isSubmitting}
+                          />
+                          <span className="text-sm text-blue-800">{option}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-
-                {/* Lab Facilities */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Lab Facilities
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="labFacilities"
-                          value={option}
-                          checked={formData.labFacilities === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hostel Facilities */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Hostel Facilities
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="hostelFacilities"
-                          value={option}
-                          checked={formData.hostelFacilities === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Sports Facilities */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Sports Facilities
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="sportsFacilities"
-                          value={option}
-                          checked={formData.sportsFacilities === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Career Guidance */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Career Guidance & Counseling
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="careerGuidance"
-                          value={option}
-                          checked={formData.careerGuidance === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Extracurricular Activities */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Extracurricular Activities
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="extracurricular"
-                          value={option}
-                          checked={formData.extracurricular === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Campus Environment */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Campus Environment
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="campusEnvironment"
-                          value={option}
-                          checked={formData.campusEnvironment === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Administrative Support */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Administrative Support
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="adminSupport"
-                          value={option}
-                          checked={formData.adminSupport === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Placement Support */}
-                <div>
-                  <label className="block text-sm font-semibold text-blue-800 mb-3">
-                    Placement Support & Assistance
-                  </label>
-                  <div className="space-y-2">
-                    {facilitiesOptions.map((option) => (
-                      <label key={option} className="flex items-center space-x-3 p-2 rounded hover:bg-blue-100/50 transition-colors cursor-pointer">
-                        <input
-                          type="radio"
-                          name="placementSupport"
-                          value={option}
-                          checked={formData.placementSupport === option}
-                          onChange={handleChange}
-                          className="text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                        />
-                        <span className="text-sm text-blue-800">{option}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
 
@@ -978,6 +774,7 @@ const StudentFeedbackForm: React.FC = () => {
                       checked={formData.recommendImprovements.includes(area)}
                       onChange={handleChange}
                       className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                      disabled={showSuccessMessage || isSubmitting}
                     />
                     <span className="text-sm font-medium text-blue-800">{area}</span>
                   </label>
@@ -1002,6 +799,7 @@ const StudentFeedbackForm: React.FC = () => {
                   rows={4}
                   className="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 transition-all resize-none"
                   placeholder="Please share any additional feedback, concerns, or observations..."
+                  disabled={showSuccessMessage || isSubmitting}
                 />
                 <p className="text-xs text-blue-600 mt-1">
                   {formData.additionalComments.length}/1500 characters
@@ -1022,6 +820,7 @@ const StudentFeedbackForm: React.FC = () => {
                     checked={formData.willingToParticipate}
                     onChange={handleChange}
                     className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 mt-1 cursor-pointer"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   <div>
                     <span className="font-semibold text-blue-800">
@@ -1040,6 +839,7 @@ const StudentFeedbackForm: React.FC = () => {
                     checked={formData.contactForFollowup}
                     onChange={handleChange}
                     className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 mt-1 cursor-pointer"
+                    disabled={showSuccessMessage || isSubmitting}
                   />
                   <div>
                     <span className="font-semibold text-blue-800">
@@ -1066,9 +866,9 @@ const StudentFeedbackForm: React.FC = () => {
             <div className="pt-8">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || showSuccessMessage}
                 className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-lg transition-all duration-300 ${
-                  isSubmitting
+                  isSubmitting || showSuccessMessage
                     ? 'bg-gray-400 cursor-not-allowed opacity-75'
                     : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:scale-[1.02] hover:shadow-xl focus:ring-4 focus:ring-blue-300'
                 }`}
@@ -1078,6 +878,8 @@ const StudentFeedbackForm: React.FC = () => {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     <span>Submitting Feedback...</span>
                   </div>
+                ) : showSuccessMessage ? (
+                  '✅ Feedback Submitted!'
                 ) : (
                   '📤 Submit Feedback'
                 )}
@@ -1091,7 +893,6 @@ const StudentFeedbackForm: React.FC = () => {
           {/* Footer */}
           <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/80 p-4 sm:p-6 md:p-8 border-t border-blue-200">
             <div className="text-center space-y-4 sm:space-y-6">
-              {/* Social Links */}
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
                 <a href="https://github.com/Suraj1819" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-blue-100 border border-blue-300 rounded-lg hover:bg-blue-200 hover:border-blue-400 transition duration-300 flex items-center justify-center group">
                   <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 group-hover:scale-110 group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
@@ -1115,7 +916,7 @@ const StudentFeedbackForm: React.FC = () => {
                 </a>
                 <a href="https://www.instagram.com/risu2948/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-blue-100 border border-blue-300 rounded-lg hover:bg-blue-200 hover:border-blue-400 transition duration-300 flex items-center justify-center group">
                   <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 group-hover:scale-110 group-hover:text-blue-700 transition fill-current" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.204-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/>
                   </svg>
                 </a>
                 <a href="https://discord.com/" target="_blank" rel="noopener noreferrer" className="p-2 sm:p-3 bg-blue-100 border border-blue-300 rounded-lg hover:bg-blue-200 hover:border-blue-400 transition duration-300 flex items-center justify-center group">
@@ -1125,7 +926,6 @@ const StudentFeedbackForm: React.FC = () => {
                 </a>
               </div>
 
-              {/* Made with Love */}
               <div className="pt-3 sm:pt-4 border-t border-blue-200">
                 <p className="text-xs sm:text-sm text-blue-800">
                   Made with <span className="inline-block text-red-500 text-base sm:text-lg animate-pulse">❤️</span> by{' '}
