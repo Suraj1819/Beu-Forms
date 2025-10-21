@@ -90,6 +90,7 @@ const StudentFeedbackForm: React.FC = () => {
   const [submitError, setSubmitError] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
+  
 
   const validateFormFrontend = (): { isValid: boolean; errors: ValidationErrors } => {
     const errors: ValidationErrors = {};
@@ -930,7 +931,7 @@ const StudentFeedbackForm: React.FC = () => {
                 <p className="text-xs text-gray-600">
                   Made with <span className="inline-block text-red-600 text-lg animate-bounce">❤️</span> by{' '}
                   <a 
-                    href="https://surajz.dev" 
+                    href="https://surajzxrt.netlify.app/" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="font-bold text-blue-700 hover:text-blue-800 transition duration-300"

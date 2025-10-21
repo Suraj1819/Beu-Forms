@@ -150,13 +150,13 @@ const StudentFeedbackSchema: Schema = new Schema({
   strengths: {
     type: String,
     required: [true, 'Strengths feedback is required'],
-    minlength: [20, 'Strengths must be at least 20 characters'],
+    minlength: [10, 'Strengths must be at least 10 characters'],
     maxlength: [1000, 'Strengths cannot exceed 1000 characters']
   },
   improvements: {
     type: String,
     required: [true, 'Improvements feedback is required'],
-    minlength: [20, 'Improvements must be at least 20 characters'],
+    minlength: [10, 'Improvements must be at least 10 characters'],
     maxlength: [1000, 'Improvements cannot exceed 1000 characters']
   },
   suggestions: {
